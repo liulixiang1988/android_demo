@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">转换</string>
+    <string name="hello_world">你好！</string>
+    <string name="action_settings">设置</string>
+    <string name="btn_name">切换</string>
+	<string name="acitity1_name">窗口2</string>
+	<string name="tv_msg2">你好</string>
+	<string name="back">返回</string>
+</resources>
