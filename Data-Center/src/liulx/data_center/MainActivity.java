@@ -1,6 +1,9 @@
 package liulx.data_center;
 
+
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,9 +11,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity implements OnClickListener {
+	private final static int SCANNIN_ITEM_CODE = 1;
+	private final static int SCANNIN_INV_CODE = 2;
 
 	private Button btnScanItem, btnScanInv, btnSend;
 	private EditText edtItemCode, edtInvCode;
@@ -51,7 +55,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch(v.getId()){
 		case R.id.btnScanInv:
 			btnScanInv_onClick();
@@ -69,16 +72,44 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	
 	//扫描货位
 	private void btnScanInv_onClick(){
-		
+		Intent intent = new Intent();
+		intent.setClass(this, MipcaActivityCapture.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivityForResult(intent, SCANNIN_INV_CODE);
 	}
 	
 	//扫描物料
 	private void btnScanItem_onClick(){
-		
+		Intent intent = new Intent();
+		intent.setClass(this, MipcaActivityCapture.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivityForResult(intent, SCANNIN_ITEM_CODE);
 	}
 	
 	//发送数据
 	private void btnSend_onClick(){
 		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case SCANNIN_INV_CODE:
+			if(resultCode == RESULT_OK){
+				Bundle bundle = data.getExtras();
+				//显示扫描到的内容
+				edtInvCode.setText(bundle.getString("result"));
+			}
+			break;
+		case SCANNIN_ITEM_CODE:
+			if(resultCode == RESULT_OK){
+				Bundle bundle = data.getExtras();
+				//显示扫描到的内容
+				edtItemCode.setText(bundle.getString("result"));
+			}
+			break;
+			
+		}
 	}
 }
