@@ -4,14 +4,29 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 
 public class MainListActivity extends ListActivity {
+	
+	protected String[] names = {
+			"刘理想",
+			"Andrew",
+			"Bubble",
+			"Cellia",
+			"Mark",
+			"Stone",
+			"Bingo",
+			"Stefanie"
+			};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list);
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+        setListAdapter(adapter);
     }
 
 
