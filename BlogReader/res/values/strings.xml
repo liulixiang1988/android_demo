@@ -5,5 +5,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="no_data">没有数据</string>
-
+	
+    <string-array name="names">
+        <item>刘理想</item>
+		<item>Andrew</item>
+		<item>Bubble</item>
+		<item>Cellia</item>
+		<item>Mark</item>
+		<item>Stone</item>
+		<item>Bingo</item>
+		<item>Stefanie</item>
+    </string-array>
 </resources>
