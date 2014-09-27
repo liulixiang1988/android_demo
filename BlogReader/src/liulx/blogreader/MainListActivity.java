@@ -1,28 +1,53 @@
 package liulx.blogreader;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.http.conn.ConnectTimeoutException;
+
 import android.app.ListActivity;
-import android.content.res.Resources;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 
 public class MainListActivity extends ListActivity {
 	
 	protected String[] names ;
+	public static final int NUMBER_OF_POSTS = 20;
+	public static final String TAG = MainListActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list);
-        Resources resource = getResources();
-        names = resource.getStringArray(R.array.names);
         
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-        setListAdapter(adapter);
+        if (isNetworkAvailable()) {
+			GetBlogPostTasks getBlogPostTask = new GetBlogPostTasks();
+			getBlogPostTask.execute();
+		}else{
+			Toast.makeText(this, "网络连接不可用", Toast.LENGTH_LONG).show();
+		}
     }
 
+    public boolean isNetworkAvailable(){
+    	ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkinfo = manager.getActiveNetworkInfo();
+    	
+    	boolean isAvailable = false;
+    	if (networkinfo != null && networkinfo.isConnected()){
+    		isAvailable = true;
+    	}
+    	return isAvailable;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,5 +66,31 @@ public class MainListActivity extends ListActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    private class GetBlogPostTasks extends AsyncTask<Object, Void, String>{
+
+		@Override
+		protected String doInBackground(Object... params) {
+			int responseCode = 1;
+	        try{
+	        	URL blogFeedUrl = new URL("http://blog.teamtreehouse.com/api/get_recent_summary/?count="+NUMBER_OF_POSTS);
+	        	HttpURLConnection connection = (HttpURLConnection) blogFeedUrl.openConnection();
+	        	connection.connect();
+	        	
+	        	responseCode = connection.getResponseCode();
+	        	Log.i(TAG, "Response Code:"+responseCode);
+	        	
+	        } catch(MalformedURLException e){
+	        	Log.e(TAG, "Eception Caught:", e);
+	        } catch (IOException e) {
+	        	Log.e(TAG, "Eception Caught:", e);
+			} catch (Exception e){
+				Log.e(TAG, "Eception Caught:", e);
+			}
+	        
+	        return "Response Status"+responseCode;
+		}
+    	
     }
 }
