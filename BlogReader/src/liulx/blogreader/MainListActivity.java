@@ -10,6 +10,7 @@ import java.net.URL;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
@@ -29,6 +30,7 @@ public class MainListActivity extends ListActivity {
 	protected String[] names ;
 	public static final int NUMBER_OF_POSTS = 20;
 	public static final String TAG = MainListActivity.class.getSimpleName();
+	protected JSONObject blogData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,19 @@ public class MainListActivity extends ListActivity {
         getMenuInflater().inflate(R.menu.main_list, menu);
         return true;
     }
+    
+    public void updateList(){
+    	if(blogData == null){
+    		// TODO: handle error
+    		
+    	} else {
+    		try {
+				Log.d(TAG, blogData.toString(2));
+			} catch (JSONException e) {
+				Log.e(TAG, "Exception caught", e);
+			}
+    	}
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -73,11 +88,12 @@ public class MainListActivity extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    private class GetBlogPostTasks extends AsyncTask<Object, Void, String>{
+    private class GetBlogPostTasks extends AsyncTask<Object, Void, JSONObject>{
 
 		@Override
-		protected String doInBackground(Object... params) {
+		protected JSONObject doInBackground(Object... params) {
 			int responseCode = 1;
+			JSONObject jsonResponse = null;
 	        try{
 	        	URL blogFeedUrl = new URL("http://blog.teamtreehouse.com/api/get_recent_summary/?count="+NUMBER_OF_POSTS);
 	        	HttpURLConnection connection = (HttpURLConnection) blogFeedUrl.openConnection();
@@ -93,7 +109,7 @@ public class MainListActivity extends ListActivity {
 	        		reader.read(charArray);
 	        		String responseData = new String(charArray);
 	        		
-	        		JSONObject jsonResponse = new JSONObject(responseData);
+	        		jsonResponse = new JSONObject(responseData);
 	        		String status = jsonResponse.getString("status");
 	        		Log.v(TAG, status);
 	        		
@@ -115,8 +131,13 @@ public class MainListActivity extends ListActivity {
 				Log.e(TAG, "Eception Caught:", e);
 			}
 	        
-	        return "Response Status"+responseCode;
+	        return jsonResponse;
 		}
-    	
+		
+	   @Override
+		protected void onPostExecute(JSONObject result) {
+			blogData = result;
+			updateList();
+		}
     }
 }
