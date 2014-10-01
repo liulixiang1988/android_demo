@@ -7,15 +7,18 @@
     <string name="no_data">没有数据</string>
     <string name="error_title">呀，有问题</string>
     <string name="error_message">数据获取好像有问题</string>
-	
+
     <string-array name="names">
         <item>刘理想</item>
-		<item>Andrew</item>
-		<item>Bubble</item>
-		<item>Cellia</item>
-		<item>Mark</item>
-		<item>Stone</item>
-		<item>Bingo</item>
-		<item>Stefanie</item>
+        <item>Andrew</item>
+        <item>Bubble</item>
+        <item>Cellia</item>
+        <item>Mark</item>
+        <item>Stone</item>
+        <item>Bingo</item>
+        <item>Stefanie</item>
     </string-array>
+
+    <string name="title_activity_blog_post">Blog Post</string>
+
 </resources>

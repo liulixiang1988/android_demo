@@ -80,7 +80,7 @@ public class MainListActivity extends ListActivity {
 			blogPosts = blogData.getJSONArray("posts");
 	    	JSONObject blogPost = blogPosts.getJSONObject(position);
 	    	String blogUrl = blogPost.getString("url");
-	    	Intent i = new Intent(Intent.ACTION_VIEW);
+	    	Intent i = new Intent(this, BlogPostActivity.class);
 	    	i.setData(Uri.parse(blogUrl));
 	    	startActivity(i);
 		} catch (JSONException e) {
