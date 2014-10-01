@@ -17,8 +17,10 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -27,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -70,10 +73,19 @@ public class MainListActivity extends ListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_list, menu);
-        return true;
+    protected void onListItemClick(ListView l, View v, int position, long id) {    	
+    	super.onListItemClick(l, v, position, id);
+    	JSONArray blogPosts;
+		try {
+			blogPosts = blogData.getJSONArray("posts");
+	    	JSONObject blogPost = blogPosts.getJSONObject(position);
+	    	String blogUrl = blogPost.getString("url");
+	    	Intent i = new Intent(Intent.ACTION_VIEW);
+	    	i.setData(Uri.parse(blogUrl));
+	    	startActivity(i);
+		} catch (JSONException e) {
+			Log.e(TAG, "Exception Caught", e);
+		}
     }
     
     public void handleBlogResponse(){
