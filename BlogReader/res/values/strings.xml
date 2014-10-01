@@ -5,6 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="no_data">没有数据</string>
+    <string name="error_title">呀，有问题</string>
+    <string name="error_message">数据获取好像有问题</string>
 	
     <string-array name="names">
         <item>刘理想</item>

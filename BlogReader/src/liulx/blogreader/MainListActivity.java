@@ -8,36 +8,46 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class MainListActivity extends ListActivity {
 	
-	protected String[] names ;
+	protected String[] blogPostTitles ;
 	public static final int NUMBER_OF_POSTS = 20;
 	public static final String TAG = MainListActivity.class.getSimpleName();
 	protected JSONObject blogData;
+	protected ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list);
         
+        progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+        
+        
         if (isNetworkAvailable()) {
+        	progressBar.setVisibility(View.VISIBLE);
 			GetBlogPostTasks getBlogPostTask = new GetBlogPostTasks();
 			getBlogPostTask.execute();
 		}else{
@@ -63,18 +73,39 @@ public class MainListActivity extends ListActivity {
         return true;
     }
     
-    public void updateList(){
+    public void handleBlogResponse(){
+    	progressBar.setVisibility(View.INVISIBLE);
     	if(blogData == null){
-    		// TODO: handle error
-    		
+    		updateDispalyForError();
     	} else {
     		try {
-				Log.d(TAG, blogData.toString(2));
+    			JSONArray jsonPosts = blogData.getJSONArray("posts");
+    			blogPostTitles = new String[jsonPosts.length()];
+    			for (int i = 0; i < jsonPosts.length(); i++){
+    				JSONObject post = jsonPosts.getJSONObject(i);
+    				String title = post.getString("title");
+    				title = Html.fromHtml(title).toString();
+    				blogPostTitles[i] = title;
+    			}
+    			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blogPostTitles);
+    			setListAdapter(adapter);
 			} catch (JSONException e) {
 				Log.e(TAG, "Exception caught", e);
 			}
     	}
     }
+
+	private void updateDispalyForError() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.error_title);
+		builder.setMessage(R.string.error_message);
+		builder.setPositiveButton(android.R.string.ok, null);
+		AlertDialog dialog = builder.create();
+		dialog.show();
+		
+		TextView textView = (TextView) getListView().getEmptyView();
+		textView.setText(getString(R.string.no_data));
+	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -95,7 +126,9 @@ public class MainListActivity extends ListActivity {
 			int responseCode = 1;
 			JSONObject jsonResponse = null;
 	        try{
-	        	URL blogFeedUrl = new URL("http://blog.teamtreehouse.com/api/get_recent_summary/?count="+NUMBER_OF_POSTS);
+	        	String url = "http://blog.teamtreehouse.com/api/get_recent_summary/?count="+NUMBER_OF_POSTS;
+	        	Log.i(TAG, url);
+	        	URL blogFeedUrl = new URL(url);
 	        	HttpURLConnection connection = (HttpURLConnection) blogFeedUrl.openConnection();
 	        	connection.connect();
 	        	
@@ -111,7 +144,8 @@ public class MainListActivity extends ListActivity {
 	        		
 	        		jsonResponse = new JSONObject(responseData);
 	        		String status = jsonResponse.getString("status");
-	        		Log.v(TAG, status);
+	        		int count = jsonResponse.getInt("count");
+	        		Log.v(TAG, "status: " + status + " count:" + count);
 	        		
 	        		JSONArray jsonPosts = jsonResponse.getJSONArray("posts");
 	        		
@@ -137,7 +171,7 @@ public class MainListActivity extends ListActivity {
 	   @Override
 		protected void onPostExecute(JSONObject result) {
 			blogData = result;
-			updateList();
+			handleBlogResponse();
 		}
     }
 }
