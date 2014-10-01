@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 public class BlogPostActivity extends ActionBarActivity {
 
+	private String url;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -17,7 +18,7 @@ public class BlogPostActivity extends ActionBarActivity {
 		
 		Intent i = getIntent();
 		Uri uri = i.getData();
-		
+		url = uri.toString();
 		WebView webView = (WebView) findViewById(R.id.webView1);
 		webView.loadUrl(uri.toString());
 	}
@@ -35,9 +36,16 @@ public class BlogPostActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		if (id == R.id.share_post) {
+			sharePost();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void sharePost() {
+		Intent shareIntent = new Intent(Intent.ACTION_SEND);
+		shareIntent.setType("text/plain");
+		shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+		startActivity(Intent.createChooser(shareIntent, getString(R.string.share_post)));
 	}
 }
