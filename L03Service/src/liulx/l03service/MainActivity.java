@@ -1,5 +1,6 @@
 package liulx.l03service;
 
+import liulx.l03service.EchoService.EchoBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -14,8 +15,9 @@ import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity implements OnClickListener, ServiceConnection{
 
-	private Button btnStartService, btnStopService, btnBindService, btnUnbindService;
+	private Button btnStartService, btnStopService, btnBindService, btnUnbindService, btnGetCurrentNumber;
 	private Intent serviceIntent;
+	private EchoService echoService;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		btnStopService = (Button) findViewById(R.id.btnStopService);
 		btnBindService = (Button) findViewById(R.id.btnBindService);
 		btnUnbindService = (Button) findViewById(R.id.btnUnbindService);
+		btnGetCurrentNumber = (Button) findViewById(R.id.btnGetCurrentNumber);
 		
 		serviceIntent = new Intent(this, EchoService.class);
 		
@@ -31,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		btnStopService.setOnClickListener(this);
 		btnBindService.setOnClickListener(this);
 		btnUnbindService.setOnClickListener(this);
+		btnGetCurrentNumber.setOnClickListener(this);
 	}
 
 	@Override
@@ -66,14 +70,22 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 			break;
 		case R.id.btnUnbindService:
 			unbindService(this);
+			echoService = null;
+			break;
+		case R.id.btnGetCurrentNumber:
+			if (echoService != null){
+				System.out.println("当前获取的数字是："+echoService.getInt());
+			}
+			break;
+			
 		}
 		
 	}
 
 	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
+	public void onServiceConnected(ComponentName name, IBinder binder) {
 		System.out.println("应用已经绑定服务");
-		
+		echoService = ((EchoService.EchoBinder)binder).getService();
 	}
 
 	@Override
