@@ -1,4 +1,4 @@
-package liulx.criminalintent.app;
+package liulixiang.criminalintent;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
