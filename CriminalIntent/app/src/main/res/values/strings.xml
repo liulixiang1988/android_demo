@@ -6,4 +6,5 @@
     <string name="crime_details_label">详细</string>
     <string name="crime_solved_label">解决了？</string>
     <string name="crimes_title">犯错列表</string>
+    <string name="date_picker_title">犯罪时间：</string>
 </resources>
