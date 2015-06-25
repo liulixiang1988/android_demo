@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.UUID;
  * A simple {@link Fragment} subclass.
  */
 public class CrimeFragment extends Fragment {
+    public static final String TAG = "CrimeFragment";
     public static final String EXTRA_CRIME_ID = "liulixiang.crime_id";
     private static final String DIALOG_DATE = "date";
     public static final int REQUEST_DATE = 0;
@@ -76,10 +78,7 @@ public class CrimeFragment extends Fragment {
 
             }
         });
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
-        dateButton = (Button) v.findViewById(R.id.crime_date);
-        //dateButton.setText(sdf.format(crime.getDate()));
+        dateButton = (Button)v.findViewById(R.id.crime_date);
         updateDate();
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,16 +104,19 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) return;
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
         if (requestCode == REQUEST_DATE){
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             crime.setDate(date);
-            //dateButton.setText(crime.getDate().toString());
             updateDate();
         }
     }
 
     public void updateDate(){
-        dateButton.setText(crime.getDate().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+        String date = sdf.format(crime.getDate());
+        dateButton.setText(date);
     }
 }
