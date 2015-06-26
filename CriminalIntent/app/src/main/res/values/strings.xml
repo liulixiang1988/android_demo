@@ -7,4 +7,8 @@
     <string name="crime_solved_label">解决了？</string>
     <string name="crimes_title">犯错列表</string>
     <string name="date_picker_title">犯罪时间：</string>
+    <string name="new_crime">新建</string>
+    <string name="subtitle_format">%1$s crimes</string>
+    <string name="hide_subtitle">隐藏子标题</string>
+    <string name="show_subtitle">显示子标题</string>
 </resources>
