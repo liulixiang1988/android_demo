@@ -116,6 +116,12 @@ public class CrimeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity()).saveCrimes();
+    }
+
     public void updateDate(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
         String date = sdf.format(crime.getDate());
